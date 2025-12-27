@@ -131,6 +131,15 @@
     font-style:bold;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   }
+.cta{
+  display:inline-block;
+  padding:8px 12px;
+  border-radius:10px;
+  background:linear-gradient(90deg,#0ea5a7,#60a5fa);
+  color:#04203b;
+  font-weight:600;
+  text-decoration:none;
+}
   .layout{
     display:grid;
     grid-template-columns: 1fr 330px;
@@ -205,6 +214,8 @@
   }
   summary{cursor:pointer;color:var(--accent);font-weight:600}
   details p{margin:8px 0 0 0;color:var(--muted)}
+
+  footer{grid-column:1/-1;margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
 </style>
 </head>
 <body>
@@ -309,6 +320,7 @@
 
       <aside>
         <a class="cta" href="#contact">Request Forensic Consultation</a>
+        <a class="cta" href="encrypt-decrypt.html" target="blank">Try Encrypt-Decr Online</a>
         <div style="margin-top:12px">
           <strong style="display:block;margin-bottom:8px;color:#cfe8ff">Related topics</strong>
           <ul class="side-list">
@@ -331,8 +343,15 @@
           <p style="margin:8px 0 0 0;color:var(--muted)">forensics@example.com • (555) 555-7890</p>
         </div>
       </aside>
+      <div style="margin-top:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"></div>
+      <a class="cta" href="#tools">View tools</a>
+            <!-- <button class="cta" id="printBtn" onclick="window.print()">Print</button> -->
+    </div>
     </div>
   </div>
+   <footer>
+      © Password Forensics • Created for informational &amp; educational purposes — August 2025
+    </footer>
   </div>
 
   <script>
