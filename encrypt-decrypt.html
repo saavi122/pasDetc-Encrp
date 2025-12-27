@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Encryption Functions — Dark Reference</title>
+  <style>
+    :root{
+      --bg:#0b0f13;
+      --card:#0f1720;
+      --muted:#9aa8b2;
+      --accent:#6ee7b7;
+      --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.02);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#071018);color:#e6f3f2;min-height:100vh}
+    .container{max-width:1100px;margin:40px auto;padding:24px}
+    header{display:flex;align-items:center;gap:16px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#052026,#06343a);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:20px}
+    h1{margin:0;font-size:25px}
+    p.lead{color:var(--muted);margin:6px 0 18px;font-size: 18px;}
+
+    .grid{display:grid;grid-template-columns:1fr 380px;gap:20px}
+    .card{background:linear-gradient(180deg,var(--card), #08121a);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(2,6,10,0.6);border:1px solid var(--glass)}
+
+    .alg-list{display:flex;flex-wrap:wrap;gap:8px}
+    .alg{padding:8px 10px;border-radius:8px;background:var(--glass-2);color:var(--muted);font-size:13px}
+
+    .section-title{display:flex;align-items:center;justify-content:space-between}
+    .section-title h2{margin:0;font-size:16px}
+    .muted{color:var(--muted);font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;}
+
+    .demo{margin-top:12px}
+    textarea,input,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;resize:vertical}
+    .row{display:flex;gap:8px}
+    .row > *{flex:1}
+    button{background:linear-gradient(90deg,var(--accent),#34d399);border:none;padding:10px 12px;border-radius:8px;color:#042018;font-weight:600;cursor:pointer}
+    pre{background:rgba(0,0,0,0.25);padding:12px;border-radius:8px;overflow:auto;color:#dff7ef}
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+
+    /* responsive */
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">ED</div>
+      <div>
+        <h1>Encryption-Decryption Functions</h1>
+        <p class="lead">Quick demo tools (Base64, Caesar) included — for production, use vetted crypto libraries.</p>
+      </div>
+    </header>
+
+    <main class="grid" role="main">
+      <section class="card">
+        <div class="section-title">
+          <h2 style="font-size: 18px;">Supported algorithms</h2>
+          <span class="muted">many symmetric & asymmetric ciphers</span>
+        </div>
+        <div style="margin-top:12px" class="alg-list" aria-hidden="false">
+          <!-- condensed sample list, not exhaustive -->
+          <span class="alg">AES-128-CBC</span>
+          <span class="alg">AES-256-GCM</span>
+          <span class="alg">ChaCha20</span>
+          <span class="alg">Blowfish</span>
+          <span class="alg">Camellia</span>
+          <span class="alg">DES3</span>
+          <span class="alg">RC4</span>
+          <span class="alg">RSA</span>
+          <span class="alg">ECDSA</span>
+        </div>
+
+        <hr style="margin:14px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+
+        <h3 style="margin:8px 0">Notes</h3>
+        <p class="muted" style="font-size: 15px;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Popular: AES is widely 
+            adopted for its security and performance. Some legacy algorithms (DES, RC4) are considered insecure. Key size influences security; larger 
+            keys generally increase resistance to brute-force attacks but may impact performance.</p>
+
+        <h3 style="margin-top:14px">Quick history</h3>
+        <p class="muted" style="font-size: 15px;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Encryption has ancient roots 
+            (scytale, substitution ciphers), mechanical advances in the early 20th century (e.g., Enigma), and modern algorithmic systems (DES, AES) after 
+            the computer era.</p>
+
+        <h3 style="margin-top:14px">Interactive demos</h3>
+        <div class="demo">
+          <label class="muted">Plaintext</label>
+          <textarea id="inputText" rows="3">Hello, encryption!</textarea>
+
+          <div style="height:8px"></div>
+          <div class="row">
+            <select id="algoSelect" aria-label="algorithm select">
+              <option value="base64" style="color: black;">Base64 (encode/decode)</option>
+              <option value="caesar" style="color: black;">Caesar Cipher (shift)</option>
+            </select>
+            <input id="caesarShift" type="number" value="3" min="1" max="25" style="max-width:120px" aria-label="shift amount">
+          </div>
+
+          <div style="height:8px"></div>
+          <div class="row">
+            <button id="doEncode">Encode / Encrypt</button>
+            <button id="doDecode">Decode / Decrypt</button>
+          </div>
+
+          <div style="height:12px"></div>
+          <label class="muted">Output</label>
+          <pre id="output">(output appears here)</pre>
+        </div>
+
+      </section>
+
+      <aside class="card" aria-label="sidebar">
+        <div class="section-title">
+          <h2 style="font-size: 18px;">Security tips</h2>
+        </div>
+        <ul class="muted" style="padding-left:18px;margin-top:10px;line-height:1.6;font-size: 15px;">
+          <li>Use standard libraries (Web Crypto API, libsodium) — don’t roll your own crypto.</li>
+          <li>Prefer authenticated encryption (e.g., AES-GCM) to detect tampering.</li>
+          <li>Use sufficiently large keys (e.g., AES-256 when appropriate).</li>
+          <li>Rotate keys and protect secrets — never hardcode keys in client code.</li>
+        </ul>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+        <div>
+          <h3 style="margin:0">Caesar cipher example</h3>
+          <p class="muted" style="font-size:15px;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Shifts letters in the alphabet by a fixed number. Insecure — useful for learning.</p>
+        </div>
+
+        <div style="height:10px"></div>
+        <label class="muted">Example output</label>
+        <pre id="example" style="height:120px">(try the demo on the left)</pre>
+      </aside>
+    </main>
+
+    <footer>
+      <div style="height:6px"></div>
+      <div class="muted" style="font-size: 14px;">@For full algorithm lists and details, consult authoritative resources and libraries.</div>
+    </footer>
+  </div>
+
+  <script>
+    // Simple demo: Base64 + Caesar
+    const input = document.getElementById('inputText');
+    const out = document.getElementById('output');
+    const algo = document.getElementById('algoSelect');
+    const shiftEl = document.getElementById('caesarShift');
+    const example = document.getElementById('example');
+
+    function caesarEncode(s, shift){
+      return s.replace(/[a-z]/gi, (c)=>{
+        const base = c<='Z' ? 65 : 97;
+        const code = ((c.charCodeAt(0)-base+shift)%26)+base;
+        return String.fromCharCode(code);
+      });
+    }
+    function caesarDecode(s, shift){
+      return caesarEncode(s, (26-shift)%26);
+    }
+
+    document.getElementById('doEncode').addEventListener('click', ()=>{
+      const txt = input.value || '';
+      if(algo.value==='base64'){
+        try{ out.textContent = btoa(unescape(encodeURIComponent(txt))); }catch(e){ out.textContent = 'Error: '+e.message }
+      }else{
+        const shift = Math.max(0, Math.min(25, parseInt(shiftEl.value)||0));
+        out.textContent = caesarEncode(txt, shift);
+        example.textContent = caesarEncode('Meet me at the park at noon.', shift);
+      }
+    });
+
+    document.getElementById('doDecode').addEventListener('click', ()=>{
+      const txt = input.value || '';
+      if(algo.value==='base64'){
+        try{ out.textContent = decodeURIComponent(escape(atob(txt))); }catch(e){ out.textContent = 'Error: invalid Base64' }
+      }else{
+        const shift = Math.max(0, Math.min(25, parseInt(shiftEl.value)||0));
+        out.textContent = caesarDecode(txt, shift);
+      }
+    });
+
+    // update example on algo change
+    algo.addEventListener('change', ()=>{
+      if(algo.value==='base64'){
+        shiftEl.disabled = true; shiftEl.style.opacity=0.6;
+        example.textContent = 'Base64 encodes binary data as ASCII. Not encryption.'
+      }else{ shiftEl.disabled=false; shiftEl.style.opacity=1; example.textContent='(try the demo on the left)' }
+    });
+    // init
+    algo.dispatchEvent(new Event('change'));
+  </script>
+</body>
+</html>
